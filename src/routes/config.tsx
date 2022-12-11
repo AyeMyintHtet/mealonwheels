@@ -4,7 +4,7 @@ export const RouteConfig =[
     {
         path:'/',
         element: <Home/>,
-        // protect: true,
+        protect: true,
     },
     {
         path:'/login',
