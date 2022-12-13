@@ -6,7 +6,7 @@ import { useAuth } from 'hook'
 
 const PrivateRoute = ({ children }: any) => {
     const { UserLogin_data } = useAuth()
-    let check = UserLogin_data?.['auth-token'] ? false : true
+    let check = UserLogin_data ? false : true
     console.log('check', check)
     if (check) {
         return <Navigate to='/login' />

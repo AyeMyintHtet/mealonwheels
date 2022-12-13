@@ -7,8 +7,8 @@ client.interceptors.request.use(async (config?: any) => {
   config.baseURL = configKey.apiUrl
 
   let res = await localStorage.getItem('auth-store')
-
-  config.headers['auth-token'] = res || ''
+  res = `Bearer ${res}`
+  config.headers['Authorization'] = res || ''
 
   return config
 }, (error?: any) => {

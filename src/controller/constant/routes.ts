@@ -2,9 +2,9 @@ export const routes = {
   allRole : `get:api/role`,
 
   //auth
-  userRegister :`post:api/user/AddUser`,
+  adminRegister :`post:api/user/AddUser`,
   loginUser :`post:api/createToken`,
-  customerRegister:`post:customer/AddCustomer`,
+  customerRegister:`post:api/customer/AddCustomer`,
 
   //ticket
   getTicketByID : `get:api/posts/`,

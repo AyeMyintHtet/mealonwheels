@@ -19,19 +19,25 @@ const UserRole = createAsyncThunk('authSlice/UserRole', async () => {
 })
 
 const Register = createAsyncThunk('authSlice/UserRegister', async (data) => {
-  return await serviceController(routes.userRegister, data)
+  return await serviceController(routes.adminRegister, data)
     .then((res) => {
       if (res.data) return res.data
       return res
     })
 })
-
+const CustomerRegister = createAsyncThunk('authSlice/CustomerRegister', async (data)=>{
+  return await serviceController(routes.customerRegister,data)
+  .then((res)=>{
+    if(res.data) return res.data
+    return res
+  })
+})
 
 const Login = createAsyncThunk('authSlice/UserLogin', async (data:any) => {
   return await serviceController(`${routes.loginUser}?email=${data.email}&password=${data.password}`)
     .then((res) => {
       if (res?.data) {
-        localStorage.setItem('auth-store', res.data['auth-token'])
+        localStorage.setItem('auth-store', res.data)
         return res.data
       }
       return res.response.data
@@ -81,6 +87,7 @@ export default {
   Logout: authSlice.actions.Logout,
   ModalVisible: authSlice.actions.ModalVisible,
   UserRole,
+  CustomerRegister,
   Register,
   Login
 }

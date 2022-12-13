@@ -11,8 +11,12 @@ export const RouteConfig =[
         element: <Login/>
     },
     {
-        path:'/register',
+        path:'/registeradmin',
         element:<Login/>
-    }
+    },
+    {
+        path:'/registeruser',
+        element:<Login/>
+    },
 
 ]

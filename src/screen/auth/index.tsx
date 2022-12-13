@@ -13,14 +13,26 @@ const Login = () => {
   const navigate = useNavigate()
 
   const [ChangeRoute, setChangeRoute] = useState(true)
-  const { UserRole_data, AuthAction, dispatch } = useAuth()
+  const { AuthAction, dispatch } = useAuth()
   const [registerData, setRegisterData]: any = useState({
     name: '',
-    role: ''
+    role: '',
+    phone: '',
+    city: '',
+    township: '',
+    detailaddress: '',
+    age: '',
   })
+  let UserRole_data = [
+    {
+      roleName: 'Admin'
+    },
+    {
+      roleName: 'SuperAdmin'
+    }
 
+  ]
   useEffect(() => {
-    dispatch(AuthAction.UserRole());
   }, [])
 
   const schema = Yup.object().shape({
@@ -35,42 +47,61 @@ const Login = () => {
     let obj = {
       ...values,
       name: registerData.name,
-      userrole: registerData.role
+      role: registerData.role,
+      phone: registerData.phone
     }
-    if (location.pathname === '/register') {
+    if (location.pathname === '/registeradmin') {
 
       if (registerData?.name === '' || registerData?.role === '') {
         return dispatch(AuthAction.ModalVisible({ data: 'Name or Role must not empty!' }))
       }
-      
+
       let res = await dispatch(AuthAction.Register(obj));
       if (!res.payload) {
         await dispatch(AuthAction.ModalVisible({ data: `${res.payload.response.data.message}` }))
         return
       }
-      
+
       navigate('/login', { replace: true })
-    
+
+    } else if (location.pathname === '/registeruser') {
+      if (registerData?.name === '' || registerData.phone === '' || registerData.email === '' ||  registerData.city === '' ||registerData.township=== '' || registerData.detailaddress=== '' ||registerData.age === '' ) {
+        return dispatch(AuthAction.ModalVisible({ data: 'Name or Role must not empty!' }))
+      }
+      delete obj.name
+      delete obj.role
+      obj.customerName = registerData.name
+      obj.city = registerData.city
+      obj.township = registerData.township
+      obj.detailedAddress = registerData.detailaddress
+      obj.age = registerData.age
+      let res = await dispatch(AuthAction.CustomerRegister(obj));
+      if (!res.payload) {
+        await dispatch(AuthAction.ModalVisible({ data: `${res.payload.response.data.message}` }))
+        return
+      }
+
+      navigate('/login', { replace: true })
     } else {
-    
+
       delete obj.name
       delete obj.userrole
-    
+
       let res = await dispatch(AuthAction.Login(obj))
-      if (res?.payload.status === 'success') return navigate('/')
+      if (res?.payload) return navigate('/')
       dispatch(AuthAction.ModalVisible({ data: `${res.payload}` }))
     }
   }
   const RouteChange = async () => {
-  
+
     setChangeRoute((prev) => !prev)
     if (ChangeRoute) return navigate('/login')
-    return navigate('/register')
-  
+    return navigate('/registeruser')
+
   }
-  
+
   const ChangeText = (from: string, to: string) => {
-    if (location.pathname === '/register') return from
+    if (location.pathname === '/registeruser') return from
     return to
   }
   return (
@@ -93,7 +124,7 @@ const Login = () => {
                     <div className="form">
                       <form noValidate onSubmit={handleSubmit}>
                         {
-                          location.pathname === '/register' &&
+                          location.pathname === '/registeradmin' || location.pathname === '/registeruser' &&
                           <>
                             <TextCom size='sm' className='mb-2'>Name</TextCom>
                             <div className="field">
@@ -102,6 +133,17 @@ const Login = () => {
                                 name="name"
                                 onChange={(e: any) => setRegisterData({ ...registerData, name: e.target.value })}
                                 placeholder="Enter your name"
+                                className="form-control inp_text"
+                                id="name"
+                              />
+                            </div>
+                            <TextCom>Phone</TextCom>
+                            <div className="field">
+                              <input
+                                type="text"
+                                name="name"
+                                onChange={(e: any) => setRegisterData({ ...registerData, phone: e.target.value })}
+                                placeholder="Enter your Phone"
                                 className="form-control inp_text"
                                 id="name"
                               />
@@ -141,7 +183,7 @@ const Login = () => {
                           {errors.password && touched.password && errors.password}
                         </p>
                         {
-                          location.pathname === '/register' &&
+                          location.pathname === '/registeradmin' &&
                           <>
                             <div className="d-flex flex-column">
                               <TextCom as='label' htmlFor="roles" style={{ fontSize: '14px' }}>Choose a Role</TextCom>
@@ -152,7 +194,7 @@ const Login = () => {
                                   UserRole_data?.length > 0 ?
                                     UserRole_data?.map((data: any, key: number) => {
                                       return (
-                                        <TextCom as='option' value={data.roleID} key={key}>{data.roleName}</TextCom>
+                                        <TextCom as='option' value={data.roleName} key={key}>{data.roleName}</TextCom>
                                       )
                                     })
                                     :
@@ -162,9 +204,66 @@ const Login = () => {
                             </div>
                           </>
                         }
+                        {
+                          location.pathname === '/registeruser' &&
+                          <>
+                            <div className="d-flex flex-column">
+                              <TextCom as='label' htmlFor="roles" style={{ fontSize: '14px' }}>City</TextCom>
+                              <div className="field">
+                                <input
+                                  type="text"
+                                  name="name"
+                                  onChange={(e: any) => setRegisterData({ ...registerData, city: e.target.value })}
+                                  placeholder="Enter your name"
+                                  className="form-control inp_text"
+                                  id="name"
+                                />
+                              </div>
+                            </div>
+                            <div className="d-flex flex-column">
+                              <TextCom as='label' htmlFor="roles" style={{ fontSize: '14px' }}>Township</TextCom>
+                              <div className="field">
+                                <input
+                                  type="text"
+                                  name="name"
+                                  onChange={(e: any) => setRegisterData({ ...registerData, township: e.target.value })}
+                                  placeholder="Enter your name"
+                                  className="form-control inp_text"
+                                  id="name"
+                                />
+                              </div>
+                            </div>
+                            <div className="d-flex flex-column">
+                              <TextCom as='label' htmlFor="roles" style={{ fontSize: '14px' }}>Detail Address</TextCom>
+                              <div className="field">
+                                <input
+                                  type="text"
+                                  name="name"
+                                  onChange={(e: any) => setRegisterData({ ...registerData, detailaddress: e.target.value })}
+                                  placeholder="Enter your name"
+                                  className="form-control inp_text"
+                                  id="name"
+                                />
+                              </div>
+                            </div>
+                            <div className="d-flex flex-column">
+                              <TextCom as='label' htmlFor="roles" style={{ fontSize: '14px' }}>Age</TextCom>
+                              <div className="field">
+                                <input
+                                  type="text"
+                                  name="name"
+                                  onChange={(e: any) => setRegisterData({ ...registerData, age: e.target.value })}
+                                  placeholder="Enter your name"
+                                  className="form-control inp_text"
+                                  id="name"
+                                />
+                              </div>
+                            </div>
+                          </>
+                        }
                         <button type="submit">{ChangeText('Register', 'Login')}</button>
                         <div className="d-flex align-items center justify-content-between">
-                          <TextCom className='notmember'>{ChangeText('Not a member ?', 'Already Register ?')}</TextCom>
+                          <TextCom className='notmember'>{ChangeText('Already Register?', 'Not a member ?')}</TextCom>
                           <TextCom className='goTo' onClick={() => RouteChange()}>{ChangeText('Login', 'Sign Up')}</TextCom>
                         </div>
                       </form>
